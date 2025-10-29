@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulir Penilaian Asesor</title>
 
-    <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/index.js"></script>
+<script src="docx.js"></script>
 
     <style>
         /* Style CSS Lengkap (Sama seperti sebelumnya) */
@@ -73,7 +74,7 @@
 
     <div class="container" id="data-asesor-container">
         <div class="butir-block">
-            <h2 class="butir-title">Informasi Asesmen</h2>
+            <h2 class="butir-title">Rekapitulasi Data Penggalian Akreditasi</h2>
             <div class="data-asesor-padding">
                 <p>Mohon isi data berikut dan pilih program penugasan sebelum memulai.</p>
                 <div class="form-grid">
@@ -99,7 +100,7 @@
     <main class="container" id="formulir-container">
         <div class="action-buttons-container">
             <button id="save-progress-btn">Simpan Progres</button>
-            <button id="export-word-btn">Ekspor ke Word (.docx)</button>
+            <button id="export-word-btn">Ekspor ke Word (.doc)</button>
             <button id="clear-data-btn">Hapus Data Tersimpan</button>
             <div id="score-summary">
                 Total Nilai: <span id="total-score">-</span> |
