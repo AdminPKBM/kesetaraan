@@ -78,97 +78,149 @@ function calculateAndUpdateGrade() {
 
 
 /** ==========================================================
- * FUNGSI UNTUK EKSPOR WORD (.DOCX)
+ * FUNGSI UNTUK EKSPOR WORD (.DOC) - MENGGUNAKAN HTML DATA URI (OFFLINE/ONLINE COMPATIBLE)
  * ========================================================== */
 async function exportToWord() {
-    console.log("Export to Word function called.");
+    console.log("Export to Word function called (HTML Data URI method - Bukti Only).");
     try {
-        // Pengecekan pustaka docx yang lebih ketat
-        if (typeof docx === 'undefined' || !docx || typeof docx.Document !== 'function') {
-             alert("Pustaka 'docx' belum siap atau gagal dimuat. Mohon tunggu, periksa koneksi internet, dan coba lagi.");
-             console.error("docx object or required components are missing:", docx);
-             return;
-        }
-        const { Document, Packer, Paragraph, Table, TableCell, TableRow, VerticalAlign, WidthType, HeadingLevel, TextRun, AlignmentType, BorderStyle } = docx;
-        console.log("docx library components seem available.");
-
-        // Ambil Data Header (dengan fallback jika elemen tidak ada)
+        // Ambil data dari formulir
         const getElementValue = (id) => document.getElementById(id)?.value || '';
         const namaAsesor = getElementValue("nama_asesor");
         const nia = getElementValue("nia_asesor");
         const namaSatuan = getElementValue("nama_satuan");
         const npsn = getElementValue("npsn_satuan");
-        console.log("Header data retrieved:", { namaAsesor, nia, namaSatuan, npsn });
 
-        // Helpers
-        const createHeaderCell = (text = "", widthPercent) => new TableCell({ width: { size: widthPercent, type: WidthType.PERCENTAGE }, children: [new Paragraph({ text: String(text), alignment: AlignmentType.CENTER })], verticalAlign: VerticalAlign.CENTER });
-        const createTableCell = (content = "") => new TableCell({ children: Array.isArray(content) ? content : [new Paragraph(String(content))], verticalAlign: VerticalAlign.TOP });
-        const createMergedCell = (text = "", rowSpan) => new TableCell({ children: [new Paragraph(String(text))], rowSpan: rowSpan, verticalAlign: VerticalAlign.CENTER });
-
-        // Header Dokumen
-        const headerParagraphs = [ /* ... (sama, pakai tabel tanpa border) ... */ ];
-        const tableHeader = new TableRow({ /* ... (sama) ... */ });
-        const tableBodyRows = [];
-
-        // Validasi allData sebelum loop
-        if (typeof allData === 'undefined' || !Array.isArray(allData)) { console.error("exportToWord: allData missing."); alert("Error: Data butir tidak ditemukan."); return; }
-
-        allData.forEach((butir) => {
-            if (!butir || !butir.indicators || !Array.isArray(butir.indicators)) return;
-            butir.indicators.forEach((indicator, index) => {
-                if (!indicator || !indicator.id) return;
-                let rekapDoc = [], rekapWaw = [], rekapObs = [];
-                const createCellContent = (dataType, isMultiPaket) => {
-                    const paragraphs = [];
-                    if (isMultiPaket && Array.isArray(selectedPaket) && selectedPaket.length > 0) {
-                        selectedPaket.forEach((paket, idx) => {
-                            const data = document.querySelector(`textarea[name="${dataType}_paket${paket}_${indicator.id}"]`)?.value || "";
-                            if (data) {
-                                paragraphs.push(new Paragraph({ children: [new TextRun({ text: `Paket ${paket}:`, bold: true })], spacing: { before: idx > 0 ? 100 : 0 } }));
-                                data.split('\n').forEach(line => paragraphs.push(new Paragraph(line)));
-                            }
-                        });
-                    } else if (!isMultiPaket) {
-                        const data = document.querySelector(`textarea[name="${dataType}_${indicator.id}"]`)?.value || "";
-                        data.split('\n').forEach(line => paragraphs.push(new Paragraph(line)));
+        // --- Helper untuk mengambil konten Rekap/Catatan (TIDAK MENGAMBIL NILAI) ---
+        const getRekapContent = (dataType, isMultiPaket, indicatorId) => {
+            let content = '';
+            if (isMultiPaket && selectedPaket.length > 0) {
+                selectedPaket.forEach(paket => {
+                    const data = document.querySelector(`textarea[name="${dataType}_paket${paket}_${indicatorId}"]`)?.value || "";
+                    if (data.trim()) {
+                        // Hanya tampilkan Paket dan Rekap Data (Nilai/Grade dihilangkan)
+                        content += `<b>Paket ${paket}:</b><br>${data.replace(/\n/g, '<br>')}<br>`;
                     }
-                    return paragraphs.length > 0 ? paragraphs : [new Paragraph("")];
-                };
-                rekapDoc = createCellContent('rekap_doc', butir.isMultiPaket);
-                rekapWaw = createCellContent('rekap_waw', butir.isMultiPaket);
-                rekapObs = createCellContent('rekap_obs', butir.isMultiPaket);
-                const tableCells = [];
-                if (index === 0) tableCells.push(createMergedCell(butir.butirTitle, butir.indicators.length));
-                tableCells.push(createTableCell(indicator.title || ''));
-                tableCells.push(createTableCell(rekapDoc));
-                tableCells.push(createTableCell(rekapWaw));
-                tableCells.push(createTableCell(rekapObs));
-                tableBodyRows.push(new TableRow({ children: tableCells }));
+                });
+            } else if (!isMultiPaket) {
+                const data = document.querySelector(`textarea[name="${dataType}_${indicatorId}"]`)?.value || "";
+                if (data.trim()) {
+                    content = data.replace(/\n/g, '<br>');
+                }
+            }
+            return content;
+        };
+        
+        // --- 1. Mulai Buat String HTML ---
+        let htmlContent = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head>
+                <meta charset='utf-8'>
+                <title>Laporan Asesmen</title>
+                <style>
+                    body { font-family: 'Times New Roman', Times, serif; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                    th, td { border: 1px solid #000; padding: 8px; text-align: left; vertical-align: top; font-size: 10pt; }
+                    th { background-color: #f2f2f2; text-align: center; font-weight: bold; }
+                    .header-table td { border: none; padding: 2px 0; }
+                    .butir-title-cell { font-weight: bold; text-align: center; vertical-align: middle; background-color: #f9f9f9; }
+                    .butir-title-cell-butir { font-weight: bold; }
+                </style>
+            </head>
+            <body>
+        `;
+
+        // 2. Data Asesor Header
+        htmlContent += `
+            <h1 style="text-align: center;">Rekapitulasi Data Penggalian Akreditasi</h1>
+            <table class="header-table" style="width: 80%; margin: 10px auto;">
+                <tr>
+                    <td style="width: 25%;"><b>Nama Satuan Pendidikan:</b></td>
+                    <td style="width: 25%;">${namaSatuan}</td>
+                    <td style="width: 25%;"><b>Nama Asesor:</b></td>
+                    <td style="width: 25%;">${namaAsesor}</td>
+                </tr>
+                <tr>
+                    <td><b>NPSN:</b></td>
+                    <td>${npsn}</td>
+                    <td><b>NIA:</b></td>
+                    <td>${nia}</td>
+                </tr>
+            </table>
+            <br>
+        `;
+
+        // 3. Main Table Header
+        htmlContent += `
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width:10%;">Butir</th>
+                        <th style="width:25%;">Indikator</th>
+                        <th style="width:22%;">Rekap Dokumen</th>
+                        <th style="width:22%;">Rekap Wawancara</th>
+                        <th style="width:21%;">Rekap Observasi</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        // 4. Main Table Body (Loop data)
+        allData.forEach((butir) => {
+            if (!butir || !butir.indicators || butir.indicators.length === 0) return;
+            const rowSpan = butir.indicators.length;
+
+            butir.indicators.forEach((indicator, index) => {
+                
+                let indicatorTitle = indicator.title || '';
+                
+                // Menghilangkan penambahan Nilai/Grade untuk Butir Tunggal
+                // if (!butir.isMultiPaket) { ... } <- Bagian ini telah dihapus
+
+                htmlContent += '<tr>';
+                
+                // Butir Cell (Merged)
+                if (index === 0) {
+                    htmlContent += `<td class="butir-title-cell" rowspan="${rowSpan}"><span class="butir-title-cell-butir">${butir.butirTitleShort || butir.butirTitle}</span></td>`;
+                }
+
+                // Indicator and Data Cells 
+                htmlContent += `
+                    <td>${indicatorTitle}</td>
+                    <td>${getRekapContent('rekap_doc', butir.isMultiPaket, indicator.id)}</td>
+                    <td>${getRekapContent('rekap_waw', butir.isMultiPaket, indicator.id)}</td>
+                    <td>${getRekapContent('rekap_obs', butir.isMultiPaket, indicator.id)}</td>
+                </tr>`;
             });
         });
-        console.log("Table body rows created for export:", tableBodyRows.length);
 
-        const table = new Table({ rows: [tableHeader, ...tableBodyRows], width: { size: 100, type: WidthType.PERCENTAGE } });
-        const doc = new Document({ sections: [{ children: [...headerParagraphs, table] }] });
-        console.log("Document object created for export.");
+        htmlContent += '</tbody></table>';
 
-        const blob = await Packer.toBlob(doc);
-        console.log("Blob generated:", blob);
+        // Bagian Summary Nilai Akhir tetap dihilangkan
 
-        // Picu Unduhan
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
+        htmlContent += '</body></html>';
+        
+        // --- 6. Menggunakan Data URI ---
         const safeNamaSatuan = namaSatuan.replace(/[^a-zA-Z0-9]/g, '_') || 'SatuanPendidikan';
         const safeNamaAsesor = namaAsesor.replace(/[^a-zA-Z0-9]/g, '_') || 'Asesor';
-        link.download = `Rekap_${safeNamaSatuan}_${safeNamaAsesor}.docx`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        console.log("File Word download triggered.");
+        const fileName = `Rekap_Asesmen_${safeNamaSatuan}_${safeNamaAsesor}.doc`;
+        
+        // Data URI untuk Word
+        const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(htmlContent);
+        
+        // Membuat elemen <a> untuk memicu download
+        const fileDownload = document.createElement("a");
+        document.body.appendChild(fileDownload);
+        
+        fileDownload.href = source;
+        fileDownload.download = fileName;
+        fileDownload.click();
+        
+        document.body.removeChild(fileDownload);
+        console.log("HTML-based Word download triggered successfully.");
 
     } catch (e) {
-        console.error("FATAL Error saat membuat DOCX:", e);
-        alert(`Terjadi error kritis saat membuat file Word:\n${e.message}\n\nPastikan Anda terkoneksi internet dan pustaka 'docx' berhasil dimuat. Muat ulang halaman mungkin membantu. Periksa konsol (F12) untuk detail teknis.`);
+        console.error("FATAL Error saat membuat file Word:", e);
+        alert(`Terjadi error kritis saat membuat file Word:\n${e.message}`);
     }
 }
 
