@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Penilaian Asesor</title>
+
+    <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+
+    <style>
+        /* Style CSS Lengkap (Sama seperti sebelumnya) */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; line-height: 1.6; }
+        .container { max-width: 1400px; margin: 20px auto; }
+        .butir-block { background-color: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 30px; overflow: hidden; }
+        .butir-title { background-color: #0056b3; color: white; padding: 20px 25px; margin: 0; font-size: 1.5em; }
+        .indicator-card { border-bottom: 1px solid #eee; padding: 25px; }
+        .indicator-card:last-child { border-bottom: none; }
+        .indicator-header { border-bottom: 2px solid #e9f5ff; padding-bottom: 15px; margin-bottom: 20px; }
+        .indicator-title { font-size: 1.2em; color: #333; margin: 0 0 5px 0; }
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .grid-item, .grid-item-span { display: flex; flex-direction: column; }
+        .grid-item-span { grid-column: 1 / -1; }
+        .rubric-box { background-color: #fdfdfd; border: 1px solid #ddd; border-radius: 6px; padding: 15px 20px; font-size: 0.9em; color: #555; }
+        .rubric-box h4 { color: #0056b3; margin-top: 0; }
+        .rubric-box ul { padding-left: 20px; margin-top: 5px; margin-bottom: 10px; }
+        label { font-weight: bold; color: #444; margin-bottom: 8px; font-size: 0.9em; display: block; }
+        textarea, select, input[type="text"] { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 1em; box-sizing: border-box; }
+        textarea { min-height: 100px; resize: vertical; }
+        select { background-color: #fff; cursor: pointer; }
+        textarea:disabled { background-color: #f9f9f9; color: #999; cursor: not-allowed; }
+
+        /* Form Data Asesor */
+        .data-asesor-padding { padding: 25px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; }
+        #mulai-penilaian-btn { background-color: #28a745; color: white; padding: 12px 20px; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
+        #mulai-penilaian-btn:hover { background-color: #218838; }
+        #error-message { color: #dc3545; font-weight: bold; margin-top: 15px; min-height: 1.2em; }
+
+        /* Sembunyikan form utama saat awal */
+        #formulir-container { display: none; }
+
+        /* Tab Paket */
+        .paket-selection-container { margin-top: 20px; margin-bottom: 10px; border-top: 1px solid #eee; padding-top: 20px; }
+        .paket-selection-container label.group-label { font-weight: bold; font-size: 1.1em; color: #333; display: block; margin-bottom: 10px; }
+        .paket-checkbox-group { display: flex; gap: 20px; flex-wrap: wrap; }
+        .paket-checkbox { display: flex; align-items: center; font-size: 1em; cursor: pointer; }
+        .paket-checkbox input { width: auto; margin-right: 8px; cursor: pointer; }
+        .paket-tab-container { display: flex; background-color: #f1f1f1; padding: 0 25px; border-bottom: 1px solid #ddd; flex-wrap: wrap; }
+        .paket-tab { background-color: inherit; border: none; outline: none; cursor: pointer; padding: 14px 20px; font-size: 1.1em; font-weight: bold; color: #555; transition: background-color 0.3s, color 0.3s; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+        .paket-tab:hover { background-color: #ddd; }
+        .paket-tab.active { color: #0056b3; border-bottom: 3px solid #0056b3; }
+        .paket-tab-content { display: none; animation: fadeIn 0.5s; }
+        .paket-tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Tombol Aksi & Skor */
+        .action-buttons-container { background-color: #fff; padding: 20px 25px; border-radius: 8px; box-shadow: 0 -4px 12px rgba(0,0,0,0.05); margin-top: 30px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; justify-content: flex-start; }
+        #save-progress-btn, #export-word-btn, #clear-data-btn { color: white; padding: 12px 20px; border: none; border-radius: 5px; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: background-color 0.2s; }
+        #save-progress-btn { background-color: #ffc107; color: #333; } /* Kuning */
+        #save-progress-btn:hover { background-color: #e0a800; }
+        #export-word-btn { background-color: #007BFF; /* Biru */ }
+        #export-word-btn:hover { background-color: #0056b3; }
+        #clear-data-btn { background-color: #dc3545; /* Merah */ }
+        #clear-data-btn:hover { background-color: #c82333; }
+        #save-status { font-style: italic; color: #555; }
+        #score-summary { margin-left: auto; padding-left: 20px; border-left: 2px solid #eee; font-size: 1.1em; white-space: nowrap; }
+        #score-summary span { font-weight: bold; }
+        .grade-a { color: #198754; } .grade-b { color: #0d6efd; } .grade-c { color: #ffc107; } .grade-tt { color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="data-asesor-container">
+        <div class="butir-block">
+            <h2 class="butir-title">Informasi Asesmen</h2>
+            <div class="data-asesor-padding">
+                <p>Mohon isi data berikut dan pilih program penugasan sebelum memulai.</p>
+                <div class="form-grid">
+                    <div class="form-group"> <label for="nama_asesor">Nama Asesor</label> <input type="text" id="nama_asesor"> </div>
+                    <div class="form-group"> <label for="nia_asesor">NIA</label> <input type="text" id="nia_asesor"> </div>
+                    <div class="form-group"> <label for="nama_satuan">Nama Satuan Pendidikan</label> <input type="text" id="nama_satuan"> </div>
+                    <div class="form-group"> <label for="npsn_satuan">NPSN</label> <input type="text" id="npsn_satuan"> </div>
+                </div>
+                <div class="paket-selection-container">
+                    <label class="group-label">Program Penugasan (Pilih yang sesuai):</label>
+                    <div class="paket-checkbox-group">
+                        <label class="paket-checkbox"> <input type="checkbox" id="check_paket_a" value="A"> Paket A </label>
+                        <label class="paket-checkbox"> <input type="checkbox" id="check_paket_b" value="B"> Paket B </label>
+                        <label class="paket-checkbox"> <input type="checkbox" id="check_paket_c" value="C"> Paket C </label>
+                    </div>
+                </div>
+                <button id="mulai-penilaian-btn">Mulai Penilaian</button>
+                <p id="error-message"></p>
+            </div>
+        </div>
+    </div>
+
+    <main class="container" id="formulir-container">
+        <div class="action-buttons-container">
+            <button id="save-progress-btn">Simpan Progres</button>
+            <button id="export-word-btn">Ekspor ke Word (.docx)</button>
+            <button id="clear-data-btn">Hapus Data Tersimpan</button>
+            <div id="score-summary">
+                Total Nilai: <span id="total-score">-</span> |
+                Grade Akhir: <span id="final-grade">-</span>
+            </div>
+            <span id="save-status"></span>
+        </div>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
