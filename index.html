@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Penilaian Asesor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="modal-awal" class="modal-overlay" style="display: none;"> <div class="modal-content">
+            <div class="modal-header">
+                <h2>Selamat Datang, Asesor</h2>
+                <p>Silakan isi data Anda dan pilih paket program yang akan dinilai sebelum memulai.</p>
+            </div>
+            
+            <div id="data-asesor-container">
+                <div class="data-asesor-grid">
+                    <div class="form-group">
+                        <label for="nama_asesor">Nama Asesor:</label>
+                        <input type="text" id="nama_asesor" name="nama_asesor">
+                    </div>
+                    <div class="form-group">
+                        <label for="nia_asesor">NIA Asesor:</label>
+                        <input type="text" id="nia_asesor" name="nia_asesor">
+                    </div>
+                    <div class="form-group">
+                        <label for="nama_satuan">Nama Satuan Pendidikan:</label>
+                        <input type="text" id="nama_satuan" name="nama_satuan">
+                    </div>
+                    <div class="form-group">
+                        <label for="npsn_satuan">NPSN Satuan:</label>
+                        <input type="text" id="npsn_satuan" name="npsn_satuan">
+                    </div>
+                </div>
+                <div class="paket-selection-container">
+                    <label class="group-label">Program Penugasan (Pilih yang sesuai):</label>
+                    <div class="paket-checkbox-group">
+                        <label class="paket-checkbox"> <input type="checkbox" id="check_paket_a" value="A"> Paket A </label>
+                        <label class="paket-checkbox"> <input type="checkbox" id="check_paket_b" value="B"> Paket B </label>
+                        <label class="paket-checkbox"> <input type="checkbox" id="check_paket_c" value="C"> Paket C </label>
+                    </div>
+                </div>
+                <button id="mulai-penilaian-btn">Mulai Penilaian</button>
+                <p id="error-message" class="error-text"></p>
+            </div>
+        </div>
+    </div>
+
+    <main class="container" id="formulir-container" style="display: none;"> 
+	
+
+        </main>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+	
+	
+<div class="action-buttons-container">
+            
+            <div class="action-bar-row">
+                <button id="save-progress-btn">Simpan Progres</button>
+                <button id="export-word-btn">Ekspor ke Word (.doc)</button>
+                <button id="clear-data-btn">Hapus Data Tersimpan</button>
+                <div id="score-summary">
+                    Total Nilai: <span id="total-score">-</span> |
+                    Grade Akhir: <span id="final-grade">-</span>
+                </div>
+                <span id="save-status" class="save-status-text"></span>
+            </div>
+            
+            <nav class="quick-nav">
+                </nav>
+        </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>	
+	
+	
+	
+</body>
+</html>

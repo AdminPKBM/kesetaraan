@@ -1,0 +1,398 @@
+/* --- Style CSS Anda (Sudah Ada) --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f7f6;
+    color: #333;
+    line-height: 1.6;
+    padding-bottom: 90px; /* TAMBAHKAN INI: Ruang untuk bar navigasi bawah */
+}
+.container {
+    max-width: 1400px;
+    margin: 20px auto;
+}
+.butir-block {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+.butir-title {
+    background-color: #0056b3;
+    color: white;
+    padding: 20px 25px;
+    margin: 0;
+    font-size: 1.5em;
+}
+.indicator-card {
+    border-bottom: 1px solid #eee;
+    padding: 25px;
+}
+.indicator-card:last-child { border-bottom: none; }
+.indicator-header {
+    border-bottom: 2px solid #e9f5ff;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+.indicator-title {
+    font-size: 1.2em;
+    color: #333;
+    margin: 0 0 5px 0;
+}
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+.grid-item, .grid-item-span {
+    display: flex;
+    flex-direction: column;
+}
+.grid-item-span {
+    grid-column: 1 / -1;
+}
+.rubric-box {
+    background-color: #fdfdfd;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px 20px;
+    font-size: 0.9em;
+    color: #555;
+}
+.rubric-box h4 {
+    color: #0056b3;
+    margin-top: 0;
+}
+.rubric-box ul {
+    padding-left: 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+label {
+    font-weight: bold;
+    color: #444;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    display: block;
+}
+textarea, select, input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* --- Style Tombol Aksi (Sudah Ada) --- */
+.action-buttons-container {
+    background-color: #fff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+}
+#score-summary {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-left: auto;
+    color: #333;
+}
+#total-score { color: #0056b3; }
+#final-grade { padding: 4px 8px; border-radius: 4px; color: white; }
+.grade-a { background-color: #28a745; }
+.grade-b { background-color: #17a2b8; }
+.grade-c { background-color: #ffc107; color: #333; }
+.grade-tt { background-color: #dc3545; }
+.save-status-text {
+    font-size: 0.9em;
+    /* margin-left: 10px; (Dihapus, akan diatur di bar bawah) */
+    color: green; /* Pastikan warnanya diset di sini */
+    font-weight: bold;
+}
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.95em;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+button:hover { background-color: #0056b3; }
+#clear-data-btn {
+    background-color: #dc3545;
+}
+#clear-data-btn:hover { background-color: #c82333; }
+
+/* --- Style Modal (Sudah Ada) --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+.modal-content {
+    background-color: white;
+    padding: 30px 40px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+.modal-header {
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+    margin-bottom: 25px;
+}
+.modal-header h2 {
+    margin: 0 0 10px 0;
+    color: #0056b3;
+}
+.modal-header p {
+    margin: 0;
+    font-size: 1.1em;
+    color: #555;
+}
+.data-asesor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+.paket-selection-container {
+    margin-bottom: 25px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+.group-label {
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 15px;
+}
+.paket-checkbox-group {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.paket-checkbox {
+    font-weight: normal;
+    font-size: 1em;
+    color: #333;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.paket-checkbox input {
+    width: auto;
+    height: 1.2em;
+    width: 1.2em;
+}
+#mulai-penilaian-btn {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    background-color: #28a745;
+}
+#mulai-penilaian-btn:hover {
+    background-color: #218838;
+}
+.error-text {
+    color: #dc3545;
+    text-align: center;
+    margin-top: 15px;
+    font-weight: bold;
+    display: none; /* Tampil saat ada error */
+}
+
+
+/* --- CSS TAMBAHAN UNTUK RESPONSIVE & MODERN --- */
+
+/* Ini adalah bagian baru untuk membuat responsif */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    .container {
+        margin: 10px auto;
+        padding: 0;
+    }
+    
+    /* Tombol Aksi (Sticky) */
+    .action-buttons-container {
+        flex-direction: column;
+        gap: 10px;
+        position: static; /* Hapus sticky di mobile agar tidak mengganggu */
+    }
+    .action-buttons-container button {
+        width: 100%;
+    }
+    #score-summary {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #eee;
+    }
+    .save-status-text {
+        margin-left: 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    /* Modal */
+    .modal-content {
+        width: 95%;
+        padding: 20px;
+        max-height: 95vh;
+    }
+    .data-asesor-grid {
+        grid-template-columns: 1fr; /* Stack di mobile */
+    }
+
+    /* Kartu Penilaian */
+    .butir-title {
+        font-size: 1.2em;
+        padding: 15px;
+    }
+    .indicator-card {
+        padding: 15px;
+    }
+    .card-grid {
+        grid-template-columns: 1fr; /* Stack di mobile */
+    }
+    .indicator-title {
+        font-size: 1.1em;
+    }
+}
+
+/* --- CSS TAMBAHAN UNTUK NAVIGASI PAKET INTERNAL --- */
+/*
+ * Style ini akan mengatur tautan "Paket A", "Paket B", "Paket C"
+ * yang muncul di dalam kartu indikator Butir 1, 2, 3, 4, dan 15.
+ */
+
+.indicator-header {
+    /* Menambahkan sedikit ruang jika navigasi muncul */
+    padding-bottom: 10px;
+}
+
+.paket-nav {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px dashed #e0e0e0; /* Pemisah visual */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px; /* Jarak antar link */
+}
+.paket-nav strong {
+    font-size: 0.9em;
+    color: #555;
+    margin-right: 5px;
+}
+.paket-nav a {
+    text-decoration: none;
+    background-color: #f0f0f0; /* Latar belakang abu-abu muda */
+    color: #333; /* Teks gelap */
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85em;
+    transition: all 0.2s ease;
+}
+.paket-nav a:hover {
+    background-color: #007bff; /* Biru saat di-hover */
+    color: white;
+}
+
+/* --- CSS TAMBAHAN UNTUK FUNGSI TABS PAKET --- */
+/*
+ * Style ini akan mengatur tautan "Paket A", "Paket B", "Paket C"
+ * dan menyembunyikan/menampilkan panel konten yang sesuai.
+ */
+
+/* Navigasi Tab (Paket A, B, C) */
+.paket-nav {
+    display: flex;
+    border-bottom: 2px solid #0056b3; /* Garis bawah biru tebal */
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.paket-tab-link {
+    padding: 10px 18px;
+    cursor: pointer;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    font-size: 0.95em;
+    background-color: #f4f7f6; /* Abu-abu muda */
+    border: 1px solid #ddd;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0; /* Lengkungan di atas */
+    margin-right: 5px;
+    position: relative;
+    top: 2px; /* Sedikit ke bawah agar pas dengan garis */
+    transition: all 0.2s ease;
+}
+
+/* Style untuk Tab yang Aktif */
+.paket-tab-link.active {
+    background-color: #0056b3; /* Biru */
+    color: white;
+    border-color: #0056b3;
+}
+
+/* Hover untuk Tab yang TIDAK Aktif */
+.paket-tab-link:not(.active):hover {
+    background-color: #e9ecef;
+}
+
+
+/* --- INI BAGIAN PALING PENTING --- */
+
+/* Konten Panel (yang disembunyikan/ditampilkan) */
+.paket-content-panel {
+    display: none; /* Sembunyikan semua panel by default */
+    padding-top: 10px;
+    border-top: 1px solid #eee; /* Garis pemisah tipis */
+}
+
+/* Panel yang Aktif */
+.paket-content-panel.active {
+    display: block; /* Tampilkan panel yang aktif */
+}
+/* --- AKHIR CSS TAMBAHAN --- */
