@@ -1,133 +1,369 @@
-<main class="container" id="formulir-container">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Penilaian Asesor | Modern UI/UX</title>
     
-    <h1 style="color: #0056b3; margin-bottom: 20px; font-size: 2rem;">Formulir Penilaian Asesor</h1>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <div class="butir-block" id="butir-1">
-        <h2 class="butir-title">1. Layanan Program</h2>
-        
-        <div class="indicator-card" id="indicator-1-1">
-            <div class="indicator-header">
-                <h3 class="indicator-title">1.1 Ketersediaan Dokumen Layanan</h3>
-                <p style="font-size: 0.9em; color: #888;">(Nilai butir ini berbeda tergantung paket program yang ditugaskan)</p>
-            </div>
-            
-            <div class="paket-nav" id="paket-nav-1-1">
-                <a class="paket-tab-link active" onclick="showPaketContent('1-1', 'A')">Paket A</a>
-                <a class="paket-tab-link" onclick="showPaketContent('1-1', 'B')">Paket B</a>
-                <a class="paket-tab-link" onclick="showPaketContent('1-1', 'C')">Paket C</a>
-            </div>
-            
-            <div class="paket-tabs-container">
-                
-                <div class="paket-content-panel active" id="content-1-1-A">
-                    
-                    <div class="rubric-box grid-item-span">
-                        <h4>Rubrik Penilaian Paket A</h4>
-                        <ul>
-                            <li>**Skor 4 (A):** Dokumen layanan Program Paket A tersedia lengkap dan ...</li>
-                            <li>**Skor 3 (B):** Dokumen layanan Program Paket A tersedia, namun ada 1-2 yang belum lengkap.</li>
-                            <li>**Skor 2 (C):** Dokumen layanan Program Paket A tersedia tidak lengkap (3-4 komponen hilang).</li>
-                            <li>**Skor 1 (TT):** Dokumen layanan Program Paket A tidak tersedia atau tidak relevan.</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="card-grid">
-                        <div class="grid-item">
-                            <label for="score-1-1-A">Skor Penilaian:</label>
-                            <select id="score-1-1-A" name="score-1-1-A">
-                                <option value="" disabled selected>Pilih Skor</option>
-                                <option value="4">4 - A</option>
-                                <option value="3">3 - B</option>
-                                <option value="2">2 - C</option>
-                                <option value="1">1 - TT</option>
-                            </select>
-                        </div>
-                        
-                        <div class="grid-item grid-item-span">
-                            <label for="catatan-1-1-A">Catatan/Komentar Asesor (Paket A):</label>
-                            <textarea id="catatan-1-1-A" name="catatan-1-1-A" placeholder="Berikan catatan singkat terkait bukti yang ditemukan atau kekurangan yang perlu diperbaiki."></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="paket-content-panel" id="content-1-1-B">
-                    
-                    <div class="rubric-box grid-item-span">
-                        <h4>Rubrik Penilaian Paket B</h4>
-                        <ul><li>... Rubrik khusus untuk Paket B ...</li></ul>
-                    </div>
-                    
-                    <div class="card-grid">
-                        <div class="grid-item">
-                            <label for="score-1-1-B">Skor Penilaian:</label>
-                            <select id="score-1-1-B" name="score-1-1-B">
-                                </select>
-                        </div>
-                        
-                        <div class="grid-item grid-item-span">
-                            <label for="catatan-1-1-B">Catatan/Komentar Asesor (Paket B):</label>
-                            <textarea id="catatan-1-1-B" name="catatan-1-1-B"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="paket-content-panel" id="content-1-1-C">
-                    
-                    <div class="rubric-box grid-item-span">
-                        <h4>Rubrik Penilaian Paket C</h4>
-                        <ul><li>... Rubrik khusus untuk Paket C ...</li></ul>
-                    </div>
-                    
-                    <div class="card-grid">
-                        <div class="grid-item">
-                            <label for="score-1-1-C">Skor Penilaian:</label>
-                            <select id="score-1-1-C" name="score-1-1-C">
-                                </select>
-                        </div>
-                        
-                        <div class="grid-item grid-item-span">
-                            <label for="catatan-1-1-C">Catatan/Komentar Asesor (Paket C):</label>
-                            <textarea id="catatan-1-1-C" name="catatan-1-1-C"></textarea>
-                        </div>
-                    </div>
-                </div>
-                
-            </div> </div> <div class="indicator-card" id="indicator-1-2">
-            </div>
-        
-    </div> </main>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-<div class="action-buttons-container">
+    <style>
+        /* =========================================
+           ROOT: COLOR PALETTE & GLOBAL SETTINGS
+        ==========================================*/
+        :root {
+            --primary: #2563eb;        /* biru cerah teknologi */
+            --primary-light: #dbeafe;  /* biru muda soft */
+            --secondary: #6b7280;      /* abu netral */
+            --danger: #dc2626;
+            --success: #16a34a;
+            --bg: #f3f4f6;
+            --white: #ffffff;
+
+            --radius-lg: 18px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+
+            --shadow-lg: 0 20px 40px rgba(0,0,0,0.08);
+            --shadow-md: 0 10px 25px rgba(0,0,0,0.05);
+            --shadow-soft: 0 4px 12px rgba(0,0,0,0.05);
+
+            --font: 'Poppins', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            font-family: var(--font);
+            color: #333;
+        }
+
+        
+        /* =========================================
+           MODAL (TAMPILAN AWAL)
+        ==========================================*/
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background: var(--white);
+            width: 92%;
+            max-width: 550px;
+            padding: 35px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            animation: zoomIn 0.35s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header h2 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.7rem;
+            font-weight: 700;
+        }
+
+        .modal-header p {
+            color: var(--secondary);
+            margin-bottom: 25px;
+            font-size: .95rem;
+        }
+
+        .data-asesor-grid {
+            display: grid;
+            gap: 18px;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+
+        label {
+            font-size: .85rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: var(--radius-md);
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            transition: .25s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 0 0 3px var(--primary-light);
+            outline: none;
+        }
+
+
+        /* =========================================
+           PILIHAN PROGRAM (CHECKBOX)
+        ==========================================*/
+        .group-label {
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #111827;
+        }
+
+        .paket-checkbox-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .paket-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            cursor: pointer;
+            transition: .25s;
+        }
+
+        .paket-checkbox:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .paket-checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+
+        /* =========================================
+           BUTTON UTAMA (MULAI)
+        ==========================================*/
+        #mulai-penilaian-btn {
+            width: 100%;
+            margin-top: 25px;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: .25s;
+        }
+
+        #mulai-penilaian-btn:hover {
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.35);
+            transform: translateY(-1px);
+        }
+
+
+        /* =========================================
+           MAIN CONTAINER
+        ==========================================*/
+        .container {
+            max-width: 1180px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+
+        /* =========================================
+           ACTION BAR / STICKY FOOTER
+        ==========================================*/
+        .action-buttons-container {
+            position: sticky;
+            bottom: 0;
+            background: var(--white);
+            padding: 15px 20px;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .action-bar-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .action-bar-row button {
+            border: none;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #save-progress-btn { background: #6b7280; color: white; }
+        #export-word-btn { background: var(--success); color: white; }
+        #clear-data-btn { background: var(--danger); color: white; }
+
+        #score-summary {
+            background: #eef2ff;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .quick-nav {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .quick-nav button {
+            background: #e5e7eb;
+            border: none;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: .25s;
+        }
+
+        .quick-nav button.active,
+        .quick-nav button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ==========================================*/
+        @media (max-width: 600px) {
+            .modal-content { padding: 25px; }
+            h1 { font-size: 1.6rem; }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- =========================
+     MODAL AWAL
+========================= -->
+<div id="modal-awal" class="modal-overlay">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-user-check"></i> Selamat Datang, Asesor</h2>
+            <p>Isi data asesor dan pilih minimal satu paket program.</p>
+        </div>
+
+        <div class="data-asesor-grid">
+            <div>
+                <label>Nama Asesor</label>
+                <input type="text" id="nama_asesor" placeholder="Cth: Dr. Ahmad Subardjo">
+            </div>
+
+            <div>
+                <label>NIA Asesor</label>
+                <input type="text" id="nia_asesor" placeholder="Cth: 1001-2025">
+            </div>
+
+            <div>
+                <label>Nama Satuan Pendidikan</label>
+                <input type="text" id="nama_satuan" placeholder="Cth: PKBM Harapan Bangsa">
+            </div>
+
+            <div>
+                <label>NPSN Satuan</label>
+                <input type="text" id="npsn_satuan" placeholder="Cth: 12345678">
+            </div>
+        </div>
+
+        <label class="group-label">Program Penugasan</label>
+        <div class="paket-checkbox-group">
+            <label class="paket-checkbox"><input type="checkbox" value="A"> Paket A</label>
+            <label class="paket-checkbox"><input type="checkbox" value="B"> Paket B</label>
+            <label class="paket-checkbox"><input type="checkbox" value="C"> Paket C</label>
+        </div>
+
+        <button id="mulai-penilaian-btn">Mulai Penilaian <i class="fas fa-arrow-right"></i></button>
+
+        <p id="error-message" style="color: var(--danger); text-align:center; margin-top: 12px;"></p>
     </div>
+</div>
+
+
+<!-- =========================
+     MAIN FORM
+========================= -->
+<main class="container" id="formulir-container" style="display:none">
+    <h1>Formulir Penilaian Asesor</h1>
+    <p style="color:#6b7280;">
+        Satuan: <strong id="display-nama-satuan">...</strong> — 
+        Program: <strong id="display-program">...</strong>
+    </p>
+
+    <div style="padding: 50px; border: 1px dashed #ccc; border-radius: var(--radius-lg); text-align:center;">
+        <i class="fas fa-file-alt" style="font-size: 2.8rem; color:#ccc;"></i>
+        <p style="margin-top: 12px;">Konten formulir utama akan tampil di sini</p>
+    </div>
+</main>
+
+
+<!-- =========================
+     ACTION BAR
+========================= -->
+<div class="action-buttons-container">
+    <div class="action-bar-row">
+        <button id="save-progress-btn"><i class="fas fa-save"></i> Simpan</button>
+        <button id="export-word-btn"><i class="fas fa-file-word"></i> Word</button>
+        <button id="clear-data-btn"><i class="fas fa-trash"></i> Hapus</button>
+
+        <div id="score-summary">
+            <i class="fas fa-star"></i> Nilai: <span id="total-score">-</span> |
+            <i class="fas fa-trophy"></i> Grade: <span id="final-grade">-</span>
+        </div>
+    </div>
+
+    <nav class="quick-nav">
+        <button class="active">Dimensi 1</button>
+        <button>Dimensi 2</button>
+        <button>Dimensi 3</button>
+        <button>Dimensi 4</button>
+        <button>Dimensi 5</button>
+    </nav>
+</div>
 
 <script src="data.js"></script>
 <script src="script.js"></script>
 
-<script>
-    function showPaketContent(indicatorId, paket) {
-        // 1. Dapatkan semua tautan tab untuk indikator ini
-        const tabLinks = document.querySelectorAll(`#paket-nav-${indicatorId} .paket-tab-link`);
-        
-        // 2. Dapatkan semua panel konten untuk indikator ini
-        const contentPanels = document.querySelectorAll(`#indicator-${indicatorId} .paket-content-panel`);
-        
-        // 3. Hapus kelas 'active' dari semua tautan tab dan panel
-        tabLinks.forEach(link => link.classList.remove('active'));
-        contentPanels.forEach(panel => panel.classList.remove('active'));
-        
-        // 4. Tambahkan kelas 'active' ke tautan tab yang diklik
-        const activeLink = document.querySelector(`#paket-nav-${indicatorId} a[onclick*="'${paket}'"]`);
-        if (activeLink) {
-            activeLink.classList.add('active');
-        }
-        
-        // 5. Tampilkan panel konten yang sesuai
-        const activeContent = document.getElementById(`content-${indicatorId}-${paket}`);
-        if (activeContent) {
-            activeContent.classList.add('active');
-        }
-    }
-    
-    // Asumsi: Saat loading, semua Butir yang punya Tabs akan memanggil showPaketContent('ID', 'A')
-    // Atau, ini akan diatur di script.js Anda berdasarkan data paket yang dipilih asesor.
-</script>
+</body>
+</html>
