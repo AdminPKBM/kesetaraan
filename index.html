@@ -12,6 +12,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
+        /* =========================================
+           ROOT: COLOR PALETTE & GLOBAL SETTINGS
+        ==========================================*/
         :root {
             --primary: #2563eb;
             --primary-light: #dbeafe;
@@ -38,7 +41,6 @@
             box-sizing: border-box;
         }
 
-        /* Agar modal benar-benar center */
         body {
             background: var(--bg);
             font-family: var(--font);
@@ -46,10 +48,13 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Ubah ke flex-start agar form utama bisa discroll */
+            padding-top: 0; /* Hapus padding body agar container yang punya padding */
         }
-
-        /* MODAL */
+        
+        /* =========================================
+           MODAL (TAMPILAN AWAL)
+        ==========================================*/
         .modal-overlay {
             position: fixed;
             inset: 0;
@@ -118,7 +123,7 @@
             outline: none;
         }
 
-        /* CHECKBOX PROGRAM */
+        /* PILIHAN PROGRAM (CHECKBOX) */
         .group-label {
             font-weight: 700;
             margin-top: 20px;
@@ -143,6 +148,16 @@
             cursor: pointer;
             transition: .25s;
         }
+        
+        /* Tambahkan style untuk checked */
+        .paket-checkbox input:checked + span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .paket-checkbox input:checked {
+            border-color: var(--primary);
+        }
 
         .paket-checkbox:hover {
             background: var(--primary-light);
@@ -155,7 +170,7 @@
             accent-color: var(--primary);
         }
 
-        /* BUTTON */
+        /* BUTTON UTAMA (MULAI) */
         #mulai-penilaian-btn {
             width: 100%;
             margin-top: 25px;
@@ -175,45 +190,63 @@
             transform: translateY(-1px);
         }
 
-        /* MAIN CONTAINER (Hidden initially) */
+
+        /* =========================================
+           MAIN CONTAINER STYLES (FORMULIR UTAMA)
+        ==========================================*/
+
         .container {
             max-width: 1180px;
             margin: auto;
             padding: 30px 20px;
+            padding-top: 50px;
         }
 
-        .action-buttons-container {
-            position: sticky;
-            bottom: 0;
-            background: var(--white);
-            padding: 15px 20px;
-            border-top: 1px solid #e5e7eb;
-            box-shadow: var(--shadow-soft);
+        h1 {
+            color: var(--primary);
+            font-size: 2rem;
+            margin-bottom: 12px;
         }
 
-        .action-bar-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        #save-progress-btn { background: #6b7280; color: white; }
-        #export-word-btn { background: var(--success); color: white; }
-        #clear-data-btn { background: var(--danger); color: white; }
-
-        #score-summary {
+        .summary-text {
             background: #eef2ff;
-            padding: 10px 16px;
+            padding: 15px;
+            border-left: 5px solid var(--primary);
             border-radius: var(--radius-md);
-            font-weight: 600;
-            margin-left: auto;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .summary-text span {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+
+        /* =========================================
+           NAVIGASI CEPAT
+        ==========================================*/
+        .quick-nav-wrapper {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: var(--white);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .quick-nav-wrapper label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--secondary);
+            margin-bottom: 8px;
         }
 
         .quick-nav {
             display: flex;
             gap: 8px;
-            margin-top: 12px;
+            margin-top: 5px;
             overflow-x: auto;
             padding-bottom: 4px;
         }
@@ -226,22 +259,231 @@
             white-space: nowrap;
             cursor: pointer;
             transition: .25s;
+            font-size: 0.9rem;
+            font-weight: 500;
         }
 
         .quick-nav button.active,
         .quick-nav button:hover {
             background: var(--primary);
-            color: white;
+            color: var(--white);
         }
 
-        @media (max-width: 600px) {
-            .modal-content { padding: 25px; }
+        /* =========================================
+           BUTIR / DIMENSI BLOCKS
+        ==========================================*/
+        .butir-block {
+            margin-bottom: 40px;
+            padding: 20px 0;
+        }
+
+        .butir-title {
+            font-size: 1.5rem;
+            color: #1f2937;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+        }
+
+        .indicator-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 25px;
+            border-top: 4px solid var(--primary);
+        }
+
+        .indicator-header {
+            margin-bottom: 15px;
+        }
+
+        .indicator-title {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        /* =========================================
+           GRID & INPUTS
+        ==========================================*/
+        .card-grid {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: 1fr 2fr;
+            margin-top: 15px;
+        }
+
+        .grid-item-span {
+            grid-column: 1 / -1;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: var(--radius-sm);
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            appearance: none; /* Sembunyikan panah default */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512" fill="%236b7280"><path d="M137.4 375.4c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.8-19.8H48.2c-13.2 0-25.2 7.8-30.1 19.8s-2.3 25.7 6.9 34.9l128 128z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 0.8em;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px 15px;
+            border-radius: var(--radius-sm);
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            resize: vertical;
+        }
+
+        /* =========================================
+           RUBRIK BOX
+        ==========================================*/
+        .rubric-box {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 15px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 15px;
+        }
+
+        .rubric-box h4 {
+            color: #374151;
+            margin-bottom: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .rubric-box ul {
+            list-style-type: none;
+            padding-left: 0;
+            font-size: 0.9rem;
+            color: var(--secondary);
+        }
+
+        .rubric-box li::before {
+            content: "•";
+            color: var(--primary);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* =========================================
+           TABS (Untuk Butir 1.1)
+        ==========================================*/
+        .paket-nav {
+            display: flex;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 15px;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .paket-tab-link {
+            padding: 10px 15px;
+            text-decoration: none;
+            color: var(--secondary);
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            transition: 0.3s;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .paket-tab-link.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            font-weight: 600;
+        }
+
+        .paket-content-panel {
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .paket-content-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* ACTION BAR / STICKY FOOTER */
+        .action-buttons-container {
+            position: sticky;
+            bottom: 0;
+            background: var(--white);
+            padding: 15px 20px;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: var(--shadow-soft);
+            z-index: 20; /* Pastikan di atas konten lain */
+        }
+
+        .action-bar-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            max-width: 1180px;
+            margin: auto;
+        }
+
+        .action-bar-row button {
+            border: none;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #save-progress-btn { background: #6b7280; color: white; }
+        #export-word-btn { background: var(--success); color: white; }
+        #clear-data-btn { background: var(--danger); color: white; }
+
+        #score-summary {
+            background: #eef2ff;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            margin-left: auto;
+            color: #1e3a8a;
+        }
+
+
+        /* Media Query untuk Mobile */
+        @media (max-width: 768px) {
+            .data-asesor-grid {
+                grid-template-columns: 1fr;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-bar-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .action-bar-row button {
+                width: 100%;
+            }
+            #score-summary {
+                margin-left: 0;
+                text-align: center;
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
-<!-- MODAL -->
 <div id="modal-awal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
@@ -251,31 +493,31 @@
 
         <div class="data-asesor-grid">
             <div>
-                <label>Nama Asesor</label>
+                <label for="nama_asesor">Nama Asesor</label>
                 <input type="text" id="nama_asesor" placeholder="Cth: Dr. Ahmad Subardjo">
             </div>
 
             <div>
-                <label>NIA Asesor</label>
+                <label for="nia_asesor">NIA Asesor</label>
                 <input type="text" id="nia_asesor" placeholder="Cth: 1001-2025">
             </div>
 
             <div>
-                <label>Nama Satuan Pendidikan</label>
+                <label for="nama_satuan">Nama Satuan Pendidikan</label>
                 <input type="text" id="nama_satuan" placeholder="Cth: PKBM Harapan Bangsa">
             </div>
 
             <div>
-                <label>NPSN Satuan</label>
+                <label for="npsn_satuan">NPSN Satuan</label>
                 <input type="text" id="npsn_satuan" placeholder="Cth: 12345678">
             </div>
         </div>
 
         <label class="group-label">Program Penugasan</label>
         <div class="paket-checkbox-group">
-            <label class="paket-checkbox"><input type="checkbox" value="A"> Paket A</label>
-            <label class="paket-checkbox"><input type="checkbox" value="B"> Paket B</label>
-            <label class="paket-checkbox"><input type="checkbox" value="C"> Paket C</label>
+            <label class="paket-checkbox"><input type="checkbox" value="A"> <span>Paket A</span></label>
+            <label class="paket-checkbox"><input type="checkbox" value="B"> <span>Paket B</span></label>
+            <label class="paket-checkbox"><input type="checkbox" value="C"> <span>Paket C</span></label>
         </div>
 
         <button id="mulai-penilaian-btn">Mulai Penilaian <i class="fas fa-arrow-right"></i></button>
@@ -283,6 +525,43 @@
         <p id="error-message" style="color: var(--danger); text-align:center; margin-top: 12px;"></p>
     </div>
 </div>
+
+<div id="formulir-container" class="container" style="display: none;">
+    
+    <header class="form-header-main">
+        <h1>Formulir Asesmen Satuan Pendidikan Nonformal</h1>
+        <p class="summary-text">
+            Penilaian untuk **<span id="display-nama-satuan">Nama Satuan</span>** (NPSN: <span id="display-npsn-satuan">NPSN</span>).
+            Program yang dinilai: **<span id="display-program">Program</span>**.
+        </p>
+    </header>
+
+    <div class="quick-nav-wrapper">
+        <label>Navigasi Cepat Dimensi:</label>
+        <div class="quick-nav" id="quick-navigation-tabs">
+            </div>
+    </div>
+
+    <div class="form-steps-navigation" id="form-steps-navigation">
+        <p style="padding: 50px; text-align: center; color: var(--secondary);">Formulir akan dimuat di sini setelah Anda memulai penilaian.</p>
+    </div>
+
+    <div class="action-buttons-container">
+        <div class="action-bar-row">
+            <button id="save-progress-btn"><i class="fas fa-save"></i> Simpan Progres</button>
+            <button id="export-word-btn"><i class="fas fa-file-word"></i> Export Word</button>
+            <button id="clear-data-btn"><i class="fas fa-trash"></i> Hapus Data</button>
+            
+            <div id="score-summary">
+                Skor Akhir: <span id="total-score">-</span> (<span id="final-grade">-</span>)
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="data.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
