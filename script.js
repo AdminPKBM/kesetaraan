@@ -2,6 +2,7 @@
  * =======================================================
  * FUNGSI UTAMA UNTUK MENGELOLA INTERAKSI FORMULIR ASESOR
  * =======================================================
+ * File: script.js
  */
 
 // Global state untuk menyimpan data asesmen yang sedang berjalan
@@ -17,24 +18,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const formStepsNavigation = document.getElementById('form-steps-navigation');
     const paketCheckboxes = document.querySelectorAll('.paket-checkbox input[type="checkbox"]');
     
-    // Elemen Display Ringkasan Data
+    // Elemen Display Ringkasan Data (di formulir utama)
     const displayNamaSatuan = document.getElementById('display-nama-satuan');
     const displayNPSNSatuan = document.getElementById('display-npsn-satuan');
     const displayProgram = document.getElementById('display-program');
     
-    // Elemen Input Data Asesor
+    // Elemen Input Data Asesor (di modal)
     const namaAsesorInput = document.getElementById('nama_asesor');
     const niaAsesorInput = document.getElementById('nia_asesor');
     const namaSatuanInput = document.getElementById('nama_satuan');
     const npsnSatuanInput = document.getElementById('npsn_satuan');
 
-    // 2. Event Listener untuk Tombol 'Mulai Penilaian' (Ini adalah perbaikan utama)
+    // 2. Event Listener untuk Tombol 'Mulai Penilaian'
     if (mulaiBtn) {
         mulaiBtn.addEventListener('click', handleMulaiPenilaian);
     }
     
-    // 3. Panggil checkLocalStorage saat inisialisasi
-    // checkLocalStorage(); // Matikan dulu agar modal selalu muncul untuk demo/pengembangan
+    // NOTE: checkLocalStorage() dinonaktifkan untuk fokus pada fungsionalitas tombol
+    // checkLocalStorage(); 
 
     /**
      * FUNGSI UTAMA: MENGATUR TOMBOL MULAI PENILAIAN
@@ -81,19 +82,21 @@ document.addEventListener('DOMContentLoaded', () => {
         ASESMEN_DATA = dataAsesor; // Simpan ke state global
 
         // Perbarui tampilan ringkasan data di formulir utama
-        displayNamaSatuan.textContent = dataAsesor.nama_satuan;
-        displayNPSNSatuan.textContent = dataAsesor.npsn_satuan;
-        displayProgram.textContent = dataAsesor.selected_pakets.join(', ');
+        if (displayNamaSatuan) displayNamaSatuan.textContent = dataAsesor.nama_satuan;
+        if (displayNPSNSatuan) displayNPSNSatuan.textContent = dataAsesor.npsn_satuan;
+        if (displayProgram) displayProgram.textContent = dataAsesor.selected_pakets.join(', ');
 
         // PENTING: Panggil fungsi untuk membangun formulir
         loadFormulir(dataAsesor.selected_pakets);
 
         // Transisi UI: Tutup Modal dan Tampilkan Formulir Utama
-        modalAwal.style.display = 'none';
-        formulirContainer.style.display = 'block';
+        if (modalAwal) modalAwal.style.display = 'none';
+        if (formulirContainer) formulirContainer.style.display = 'block';
     }
 
-    // Panggil fungsi inisialisasi tab (jika Anda ingin bisa mengklik tab saat form sudah di-render)
+    /**
+     * FUNGSI HELPER: MENGATUR TAMPILAN TAB BUTIR BERPAKET (Cth: Butir 1.1)
+     */
     window.showPaketContent = (indicatorId, paket) => {
         const tabLinks = document.querySelectorAll(`#paket-nav-${indicatorId} .paket-tab-link`);
         const contentPanels = document.querySelectorAll(`#indicator-${indicatorId} .paket-content-panel`);
@@ -146,18 +149,22 @@ document.addEventListener('DOMContentLoaded', () => {
             let indicatorId;
             const parts = fullId.split('-');
             
-            // Tentukan ID Indikator (1-1 atau 1-2)
+            // Tentukan ID Indikator (1-1 atau 1-1-A)
+            // Jika ada 3 bagian (misalnya 1, 1, A), indikatornya adalah 1-1
             if (parts.length === 3) {
                 indicatorId = `${parts[0]}-${parts[1]}`; 
             } else if (parts.length === 2) {
+                // Jika hanya 2 bagian (misalnya 1, 2), indikatornya adalah 1-2
                 indicatorId = fullId; 
             } else {
-                return; 
+                return; // Lewati jika format ID tidak dikenal
             }
 
             if (!scoresByIndicator[indicatorId]) {
                 scoresByIndicator[indicatorId] = [];
             }
+            // Catatan: Setiap butir dinilai (baik per paket atau universal) dianggap sebagai
+            // satu butir perhitungan dalam rata-rata dimensi.
             scoresByIndicator[indicatorId].push(scoreValue);
         });
 
@@ -166,9 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (const indicatorId in scoresByIndicator) {
             const scores = scoresByIndicator[indicatorId];
-            const sumOfScores = scores.reduce((sum, current) => sum + current, 0);
             
-            // Rata-rata Skor Butir
+            // Dalam kasus butir bertab (Butir 1.1), kita ambil rata-rata dari semua paket yang dinilai.
+            // Dalam kasus butir non-tab (Butir 1.2), hanya ada satu skor.
+            const sumOfScores = scores.reduce((sum, current) => sum + current, 0);
             const avgIndicatorScore = sumOfScores / scores.length;
             
             totalScoreAllIndicators += avgIndicatorScore;
@@ -201,12 +209,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return '-';
     }
     
-    // --- FUNGSI PEMBANGUN FORMULIR DINAMIS (DARI JAWABAN SEBELUMNYA) ---
+    // --- FUNGSI PEMBANGUN FORMULIR DINAMIS ---
     
     function loadFormulir(selectedPakets) {
         let finalHTML = '';
         const quickNavTabs = document.getElementById('quick-navigation-tabs');
-        quickNavTabs.innerHTML = ''; // Kosongkan tab navigasi cepat
+        if (quickNavTabs) quickNavTabs.innerHTML = ''; // Kosongkan tab navigasi cepat
 
         FORM_DATA.forEach((dimension, dimIndex) => {
             let dimensionContent = '';
@@ -223,11 +231,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (dimensionContent) {
                 // Tambahkan Tab Navigasi Cepat
                 const activeClass = dimIndex === 0 ? 'active' : '';
-                quickNavTabs.innerHTML += `
-                    <button class="${activeClass}" onclick="document.getElementById('dimensi-${dimension.id}').scrollIntoView({ behavior: 'smooth' })">
-                        Dimensi ${dimension.id}. ${dimension.title.split('. ')[1]}
-                    </button>
-                `;
+                if (quickNavTabs) {
+                    quickNavTabs.innerHTML += `
+                        <button class="${activeClass}" onclick="document.getElementById('dimensi-${dimension.id}').scrollIntoView({ behavior: 'smooth' })">
+                            Dimensi ${dimension.id}
+                        </button>
+                    `;
+                }
                 
                 // Tambahkan Dimensi Block
                 finalHTML += `
@@ -239,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        formStepsNavigation.innerHTML = finalHTML;
+        if (formStepsNavigation) formStepsNavigation.innerHTML = finalHTML;
         
         // Panggil ini untuk memasang event listener ke semua select skor
         setupScoreListeners(); 
@@ -250,37 +260,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (indicator.is_tabbed) {
                     const firstActivePaket = indicator.pakets.find(p => selectedPakets.includes(p));
                     if (firstActivePaket) {
+                        // Panggil showPaketContent untuk mengaktifkan tab pertama
                         showPaketContent(indicator.id, firstActivePaket);
                     }
                 }
             });
         });
         
-        // Gulir ke dimensi pertama setelah dimuat
-        document.getElementById(`dimensi-1`).scrollIntoView({ behavior: 'smooth' });
+        // Gulir ke dimensi pertama setelah dimuat (opsional)
+        const firstDimensi = document.getElementById(`dimensi-1`);
+        if (firstDimensi) {
+            firstDimensi.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 
-    // Catatan: Fungsi determineGrade dan generateFormHTML diasumsikan sama 
-    // seperti pada jawaban sebelumnya dan berfungsi dengan baik.
-
+    /**
+     * FUNGSI HELPER: MENGHASILKAN HTML FORMULIR UNTUK SATU INDIKATOR
+     */
     function generateFormHTML(indicator, selectedPakets) {
-        // ... (Fungsi ini harus disalin dari jawaban saya sebelumnya) ...
-        // Karena fungsi ini panjang, saya hanya menyertakan logikanya di sini.
-        // Silakan salin fungsi generateFormHTML LENGKAP dari jawaban sebelumnya.
-        
         const indicatorId = indicator.id;
         let contentPanelsHTML = '';
         let tabLinksHTML = '';
 
         const displayPakets = indicator.pakets.includes('All') ? selectedPakets : indicator.pakets.filter(p => selectedPakets.includes(p));
 
-        if (indicator.is_tabbed && displayPakets.length >= 1) { // Diubah dari > 1 menjadi >= 1 agar tetap bisa di-tab jika hanya 1 paket yang terpilih
-            // LOGIKA TABBED (Butir 1.1)
+        if (indicator.is_tabbed && displayPakets.length >= 1) { 
+            // LOGIKA TABBED (Cth: Butir 1.1)
             
             displayPakets.forEach((paket, index) => {
                 const isActive = index === 0; 
                 const rubricKey = indicator.pakets.includes('All') ? 'All' : paket;
                 const rubrics = indicator.rubrics[rubricKey] || [];
+                const scoreId = `score-${indicatorId}-${paket}`;
+                const catatanId = `catatan-${indicatorId}-${paket}`;
                 
                 // 1. Buat Tautan Tab
                 tabLinksHTML += `
@@ -301,8 +313,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         
                         <div class="card-grid">
                             <div class="grid-item">
-                                <label for="score-${indicatorId}-${paket}">Skor Penilaian:</label>
-                                <select id="score-${indicatorId}-${paket}" name="score-${indicatorId}-${paket}">
+                                <label for="${scoreId}">Skor Penilaian:</label>
+                                <select id="${scoreId}" name="${scoreId}">
                                     <option value="" disabled selected>Pilih Skor</option>
                                     <option value="4">4 - A</option>
                                     <option value="3">3 - B</option>
@@ -312,8 +324,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                             
                             <div class="grid-item grid-item-span">
-                                <label for="catatan-${indicatorId}-${paket}">Catatan/Komentar Asesor (Paket ${paket}):</label>
-                                <textarea id="catatan-${indicatorId}-${paket}" name="catatan-${indicatorId}-${paket}" placeholder="Berikan catatan singkat terkait bukti yang ditemukan atau kekurangan yang perlu diperbaiki."></textarea>
+                                <label for="${catatanId}">Catatan/Komentar Asesor (Paket ${paket}):</label>
+                                <textarea id="${catatanId}" name="${catatanId}" placeholder="Berikan catatan singkat terkait bukti yang ditemukan atau kekurangan yang perlu diperbaiki."></textarea>
                             </div>
                         </div>
                     </div>
@@ -323,8 +335,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return `
                 <div class="indicator-card" id="indicator-${indicatorId}">
                     <div class="indicator-header">
-                        <h3 class="indicator-title">${indicator.id} ${indicator.title}</h3>
-                        <p style="font-size: 0.9em; color: var(--color-secondary);">${indicator.description}</p>
+                        <h3 class="indicator-title">${indicator.id}. ${indicator.title}</h3>
+                        <p style="font-size: 0.9em; color: var(--secondary);">${indicator.description}</p>
                     </div>
                     
                     <div class="paket-nav" id="paket-nav-${indicatorId}">
@@ -338,16 +350,18 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         
         } else {
-            // LOGIKA NON-TABBED (Butir 1.2 atau Butir yang hanya relevan 1 paket)
+            // LOGIKA NON-TABBED (Cth: Butir 1.2)
             const paketDisplay = displayPakets.join(', ');
             const rubricKey = indicator.pakets.includes('All') ? 'All' : displayPakets[0];
             const rubrics = indicator.rubrics[rubricKey] || [];
+            const scoreId = `score-${indicatorId}`;
+            const catatanId = `catatan-${indicatorId}`;
             
             return `
                 <div class="indicator-card" id="indicator-${indicatorId}">
                     <div class="indicator-header">
-                        <h3 class="indicator-title">${indicator.id} ${indicator.title}</h3>
-                        <p style="font-size: 0.9em; color: var(--color-secondary);">${indicator.description} (Berlaku untuk Paket: ${paketDisplay})</p>
+                        <h3 class="indicator-title">${indicator.id}. ${indicator.title}</h3>
+                        <p style="font-size: 0.9em; color: var(--secondary);">${indicator.description} (Berlaku untuk Paket: ${paketDisplay})</p>
                     </div>
                     
                     <div class="rubric-box grid-item-span">
@@ -359,8 +373,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     <div class="card-grid">
                         <div class="grid-item">
-                            <label for="score-${indicatorId}">Skor Penilaian:</label>
-                            <select id="score-${indicatorId}" name="score-${indicatorId}">
+                            <label for="${scoreId}">Skor Penilaian:</label>
+                            <select id="${scoreId}" name="${scoreId}">
                                 <option value="" disabled selected>Pilih Skor</option>
                                 <option value="4">4 - A</option>
                                 <option value="3">3 - B</option>
@@ -370,8 +384,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         
                         <div class="grid-item grid-item-span">
-                            <label for="catatan-${indicatorId}">Catatan/Komentar Asesor:</label>
-                            <textarea id="catatan-${indicatorId}" name="catatan-${indicatorId}" placeholder="Berikan catatan singkat terkait bukti yang ditemukan atau kekurangan yang perlu diperbaiki."></textarea>
+                            <label for="${catatanId}">Catatan/Komentar Asesor:</label>
+                            <textarea id="${catatanId}" name="${catatanId}" placeholder="Berikan catatan singkat terkait bukti yang ditemukan atau kekurangan yang perlu diperbaiki."></textarea>
                         </div>
                     </div>
                 </div>
